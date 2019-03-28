@@ -1,0 +1,47 @@
+# MANUALLY INSTALL COMMENTED MODULES
+# requests==2.18.3
+# elasticsearch==5.4.0
+# boto
+# boto3
+# supervisor
+# envdir
+# Flask
+# flask-cors
+# # beautifulsoup4
+
+# # network
+# werkzeug==0.9.4
+# uwsgi
+# uwsgi_metrics
+# # gevent
+# raven
+# requests[security]
+
+# # test and utilities
+# nose2
+# cov-core
+# pycodestyle
+# pyflakes
+# fab-polish==1.1.0
+# click
+# pytz
+# terminaltables
+# termcolor
+# twilio
+# gdax
+
+
+cython
+ipdb
+ipython
+# # analysis
+numpy
+pandas
+scipy
+matplotlib
+jupyter
+pysqlite3
+opencv-python
+pillow
+
+# twilio
