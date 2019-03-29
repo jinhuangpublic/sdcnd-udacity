@@ -43,5 +43,8 @@ jupyter
 pysqlite3
 opencv-python
 pillow
+imageio
+imageio-ffmpeg
+moviepy
 
 # twilio
