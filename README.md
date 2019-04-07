@@ -28,3 +28,23 @@ pip install -r requirements.txt
 # Start notebook
 jupyter notebook
 ```
+
+#### Git
+```sh
+git config user.name "Jin Huang"
+git config user.name "huangjinf+githubpublic@gmail.com"
+
+```
+
+
+## Scientific mode in Intellij
+
+```
+# Run file in console
+ctr + r
+
+# Intellij options to for run
+# Run with python console 
+
+```
+

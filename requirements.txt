@@ -13,3 +13,4 @@ pillow
 imageio
 imageio-ffmpeg
 moviepy
+PyQt5
