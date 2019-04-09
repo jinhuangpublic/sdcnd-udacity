@@ -115,24 +115,24 @@ def undistort(image, mtx, dist, debug=False):
 def warp_to_birdeye(image, debug=False):
     h, w = image.shape[0], image.shape[1]
 
-    # calibrated for image1
-    src = np.array([
-        [310, 650],
-        [1001, 650],
-        [565, 470],
-        [719, 470],
-    ], np.float32)
-
-    # # calibrated for image2
+    # # calibrated for image1
     # src = np.array([
-    #     [313, 650],
+    #     [310, 650],
     #     [1001, 650],
     #     [565, 470],
-    #     [722, 470],
+    #     [719, 470],
     # ], np.float32)
 
+    # calibrated for image2
+    src = np.array([
+        [313, 650],
+        [1001, 650],
+        [565, 470],
+        [722, 470],
+    ], np.float32)
+
     width = w * 0.15
-    height = h * 0.1
+    height = h * 0.05
     dst = np.array([
         [0 + width, h - height],
         [w - width, h - height],

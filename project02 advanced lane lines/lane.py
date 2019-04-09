@@ -172,24 +172,24 @@ def fit_polynomial(binary_warped, debug=False):
 
     # Plots the left and right polynomials on the lane lines
     if debug:
-        plt.plot(left_fitx, ploty, color='red')
-        plt.plot(right_fitx, ploty, color='blue')
+        # plt.plot(left_fitx, ploty, color='red')
+        # plt.plot(right_fitx, ploty, color='blue')
         plt.imshow(out_img, cmap='gray')
         plt.show()
 
     return left_fit, right_fit, left_fitx, right_fitx, ploty, out_img
 
 
-# def put_points(image, pts, color=[0, 255, 0]):
-#     # pdb.set_trace()
-#     for (x, y) in pts:
-#         x = int(x)
-#         y = int(y)
-#         print(x, y, color)
-#         image[y, x, :] = color
-#
-#     pdb.set_trace()
-#     return image
+def put_points(image, pts, color=[0, 255, 0]):
+    # pdb.set_trace()
+    for (x, y) in pts:
+        x = int(x)
+        y = int(y)
+        print(x, y, color)
+        image[y, x, :] = color
+
+    pdb.set_trace()
+    return image
 
 
 def draw_lane(image, coeffs, color=(255, 0, 0), line_width=50):
@@ -259,12 +259,116 @@ def measure_curvature_real(leftx, rightx, ploty):
     return np.average([left_curverad, right_curverad])
 
 
+def measure_curvature_real2(image, birdeye_binary, Minv, leftx, rightx, ploty):
+    # warped from birdeye to the original image space
+    warped_left_points = np.zeros_like(birdeye_binary).astype(np.uint8)
+    warped_right_points = np.zeros_like(birdeye_binary).astype(np.uint8)
+
+    # plot the points in warped space
+    for i, x1 in enumerate(leftx):
+        x2 = rightx[i]
+        y = ploty[i]
+        warped_left_points[y, x1] = 1
+        warped_right_points[y, x2] = 1
+
+    left_points = cv2.warpPerspective(warped_left_points, Minv, (image.shape[1], image.shape[0]))
+    right_points = cv2.warpPerspective(warped_right_points, Minv, (image.shape[1], image.shape[0]))
+    # for
+
+    leftx = []
+    left_ploty = []
+    for i, row in enumerate(left_points):
+        for j, x in enumerate(row):
+            if x == 1:
+                leftx.append(j)
+                left_ploty.append(i)
+
+    rightx = []
+    right_ploty = []
+    for i, row in enumerate(right_points):
+        for j, x in enumerate(row):
+            if x == 1:
+                rightx.append(j)
+                right_ploty.append(i)
+
+    leftx = np.array(leftx)
+    left_ploty = np.array(left_ploty)
+    rightx = np.array(rightx)
+    right_ploty = np.array(right_ploty)
+
+
+    left_fit_cr = np.polyfit(left_ploty*ym_per_pix, leftx*xm_per_pix, 2)
+    right_fit_cr = np.polyfit(right_ploty*ym_per_pix, rightx*xm_per_pix, 2)
+
+    y_eval = np.max(ploty)
+
+    # Calculation of R_curve (radius of curvature)
+    left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
+    right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
+
+    # print(left_curverad)
+    # print(right_curverad)
+    out = np.average([left_curverad, right_curverad])
+
+    return out
+
 
 def compute_offset(birdeye, left_fitx, right_fitx, ploty):
     image_center = birdeye.shape[1] / 2
 
     left_bottom = np.mean(left_fitx[ploty > 0.95 * max(ploty)])
     right_bottom = np.mean(right_fitx[ploty > 0.95 * max(ploty)])
+    lane_width = right_bottom - left_bottom
+    lane_center = (left_bottom + lane_width / 2)
+
+    offset_pix = lane_center - image_center
+    offset_meter = xm_per_pix * offset_pix
+
+    return offset_meter
+
+
+def compute_offset2(image, birdeye_binary, Minv, leftx, rightx, ploty):
+    image_center = image.shape[1] / 2
+
+    # warped from birdeye to the original image space
+    warped_left_points = np.zeros_like(birdeye_binary).astype(np.uint8)
+    warped_right_points = np.zeros_like(birdeye_binary).astype(np.uint8)
+
+    # plot the points in warped space
+    for i, x1 in enumerate(leftx):
+        x2 = rightx[i]
+        y = ploty[i]
+        warped_left_points[y, x1] = 1
+        warped_right_points[y, x2] = 1
+
+    left_points = cv2.warpPerspective(warped_left_points, Minv, (image.shape[1], image.shape[0]))
+    right_points = cv2.warpPerspective(warped_right_points, Minv, (image.shape[1], image.shape[0]))
+    # for
+
+    leftx = []
+    left_ploty = []
+    for i, row in enumerate(left_points):
+        for j, x in enumerate(row):
+            if x == 1:
+                leftx.append(j)
+                left_ploty.append(i)
+
+    rightx = []
+    right_ploty = []
+    for i, row in enumerate(right_points):
+        for j, x in enumerate(row):
+            if x == 1:
+                rightx.append(j)
+                right_ploty.append(i)
+
+    leftx = np.array(leftx)
+    left_ploty = np.array(left_ploty)
+    rightx = np.array(rightx)
+    right_ploty = np.array(right_ploty)
+
+
+    left_bottom = np.mean(leftx[left_ploty > 0.95 * max(left_ploty)])
+    right_bottom = np.mean(rightx[right_ploty > 0.95 * max(right_ploty)])
     lane_width = right_bottom - left_bottom
     lane_center = (left_bottom + lane_width / 2)
 
@@ -288,31 +392,37 @@ if __name__ == '__main__':
     color_binary = compute_color_binary(calibrated_image, debug=False)
 
     # warp
-    warp_binary, M, Minv = warp_to_birdeye(color_binary, debug=False)
+    birdeye_binary, M, Minv = warp_to_birdeye(color_binary, debug=False)
 
 
-    left_fit, right_fit, left_fitx, right_fitx, ploty, birdeye_lane = fit_polynomial(warp_binary)
+    left_fit, right_fit, left_fitx, right_fitx, ploty, birdeye_lane = fit_polynomial(birdeye_binary)
 
 
-    result = add_lane(calibrated_image, warp_binary, left_fit, right_fit, left_fitx, right_fitx, ploty)
+    result = add_lane(calibrated_image, birdeye_binary, Minv, left_fit, right_fit, left_fitx, right_fitx, ploty)
 
 
     # Calculate the radius of curvature in pixels for both lane lines
     # left_curverad, right_curverad = measure_curvature_pixels(left_fit, right_fit, ploty)
     # left_curverad, right_curverad = measure_curvature_real(left_fit, right_fit, ploty)
-    curvature = measure_curvature_real(left_fitx, right_fitx, ploty)
+    measure_curvature_real2(calibrated_image, birdeye_binary, Minv,
+                            np.int_(left_fitx),
+                            np.int_(right_fitx),
+                            np.int_(ploty))
 
-    print(curvature)
     # Should see values of 1625.06 and 1976.30 here, if using
     # the default `generate_data` function with given seed number
 
-    compute_offset(warp_binary, left_fitx, right_fitx, ploty)
+    compute_offset2(calibrated_image, birdeye_binary, Minv,
+                    np.int_(left_fitx),
+                    np.int_(right_fitx),
+                    np.int_(ploty))
 
 
-    # show images
-    color_binary_image = binary_to_image(color_binary)
-    warp_image = binary_to_image(warp_binary)
-    frame = add_info(result, color_binary_image, warp_image, birdeye_lane)
-    show_image(frame)
+
+    # # show images
+    # color_binary_image = binary_to_image(color_binary)
+    # warp_image = binary_to_image(warp_binary)
+    # frame = add_info(result, color_binary_image, warp_image, birdeye_lane)
+    # show_image(frame)
 
 

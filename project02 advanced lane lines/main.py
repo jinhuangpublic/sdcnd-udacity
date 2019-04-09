@@ -25,7 +25,8 @@ import logging
 
 from camera import calibrate_camera, undistort, warp_to_birdeye
 from color import compute_color_binary
-from lane import measure_curvature_real, add_lane, fit_polynomial, compute_offset
+from lane import measure_curvature_real, add_lane, fit_polynomial, compute_offset, measure_curvature_real2, \
+    compute_offset2
 from utils import show_image, add_info, binary_to_image
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
@@ -59,8 +60,15 @@ def process_image(image, debug=False):
     # lane
     left_fit, right_fit, left_fitx, right_fitx, ploty, birdeye_lane = fit_polynomial(birdeye_binary, debug=False)
 
-    curvature = measure_curvature_real(left_fitx, right_fitx, ploty)
-    offset_meter = compute_offset(birdeye_binary, left_fitx, right_fitx, ploty)
+    # curvature = measure_curvature_real(left_fitx, right_fitx, ploty)
+    curvature = measure_curvature_real2(calibrated_image, birdeye_binary, Minv,
+                                        np.int_(left_fitx),
+                                        np.int_(right_fitx),
+                                        np.int_(ploty))
+    offset_meter = compute_offset2(calibrated_image, birdeye_binary, Minv,
+                                   np.int_(left_fitx),
+                                   np.int_(right_fitx),
+                                   np.int_(ploty))
     text_data = {
         "Curvature": f"{curvature:.0f} meter",
         "Offset": f"{offset_meter:.2f} meter from center",
@@ -136,13 +144,13 @@ def make_subclip():
 
 def main():
     # Processing images
-    # for filename in os.listdir("test_images/"):
-    #     process_image_file(filename)
+    for filename in os.listdir("test_images/"):
+        process_image_file(filename)
 
     # process_image_file("straight_lines1.jpg", debug=True)
     # process_image_file("test1.jpg")
 
-    process_video_file_simple("small.mp4")
+    # process_video_file_simple("small.mp4")
 
 
 
