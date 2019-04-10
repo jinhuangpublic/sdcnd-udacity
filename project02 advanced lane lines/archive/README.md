@@ -37,3 +37,26 @@ If you're feeling ambitious (again, totally optional though), don't stop there! 
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
+
+## Camera Calibration
+Camera calibration is done through opencv. The key step is finding the corners (image points). I use opencv's `cv2.calibrateCamera` functions to do that. Once the corners are found, we use the object and image points to calibrate the camera intrinsics.
+
+Here is an example of calibrated image transform.  
+
+<table style="width:100%">
+  <tr>
+    <th>
+      <p align="center">
+           <img src="../images/calibration1_calibrated.jpg" alt="calibration_before" width="60%" height="60%">
+           <br>Raw
+      </p>
+    </th>
+    <th>
+      <p align="center">
+           <img src="../images/calibration1_calibrated.jpg" alt="calibration_after" width="60%" height="60%">
+           <br>Calibrated
+      </p>
+    </th>
+  </tr>
+</table>
+

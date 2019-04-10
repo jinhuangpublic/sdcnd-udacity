@@ -1,11 +1,11 @@
 # Writeup
 
 
-- [code](main.py)
+- [code](./main.py)
 
-- [output_images](test_images_output)
+- [output_images](./output_images)
 
-- [outputs_videos](test_videos_output)
+- [outputs_videos](./output_videos)
 
 
 ## Image PipeLine
@@ -18,7 +18,7 @@ The code is in `main#process_image`. See output [image outputs](./output_images)
 - Fit a second degree polynomial on those points [code](./lane.py#L144-L180)
 - Draw the lane on the bird eye perspective. 
 - Unwarp the birdeye  lane back onto the image. 
-- The lane points in the birdeye perspective are warped back to the image perspective. [code](./lane.py#L236-L280) 
+- The lane points in the birdeye perspective are warped back to the image perspective. [code](./lane.py#L236-L261) 
 - Calculate the curvature of polynomial, with adjustment from the pixel unit to meter unit.
 - Calculate offset position by comparing the lane center with image center, and adjust the offset into meter unit
 - Overlay all information onto the calibrated image 
@@ -45,26 +45,4 @@ The code is in `main#process_video_file` and `main#process_frame`. See output [v
 
 - The curvature calculation is sensitive to small change. I could have chosen a bird-eye view region that extends further into the horizon.
 
-
-## Camera Calibration
-Camera calibration is done through opencv. The key step is finding the corners (image points). I use opencv's `cv2.calibrateCamera` functions to do that. Once the corners are found, we use the object and image points to calibrate the camera intrinsics.
-
-Here is an example of calibrated image transform.  
-
-<table style="width:100%">
-  <tr>
-    <th>
-      <p align="center">
-           <img src="./images/calibration1_calibrated.jpg" alt="calibration_before" width="60%" height="60%">
-           <br>Raw
-      </p>
-    </th>
-    <th>
-      <p align="center">
-           <img src="./images/calibration1_calibrated.jpg" alt="calibration_after" width="60%" height="60%">
-           <br>Calibrated
-      </p>
-    </th>
-  </tr>
-</table>
-
+- The codes could use a major clean up.
