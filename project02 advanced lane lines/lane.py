@@ -233,7 +233,6 @@ def add_lane(image, warped, Minv, left_fit, right_fit, left_fitx, right_fitx, pl
     return result
 
 
-
 def unwarp_points(image, birdeye_binary, Minv, leftx, rightx, ploty):
     """
     warped from birdeye to the original image space
