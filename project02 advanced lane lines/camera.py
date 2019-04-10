@@ -165,22 +165,29 @@ def warp_to_birdeye(image, debug=False):
 if __name__ == '__main__':
     # image = mpimg.imread("test_images/test3.jpg")
 
-    image = mpimg.imread("test_images/straight_lines2.jpg")
-    image = mpimg.imread("test_images/straight_lines1.jpg")
-    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    # image = mpimg.imread("test_images/straight_lines2.jpg")
+    # image = mpimg.imread("test_images/straight_lines1.jpg")
+    # gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    #
+    # # calibrate camera
+    # ret, mtx, dist, rvecs, tvecs = calibrate_camera()
+    #
+    # calibrated_image = undistort(image, mtx, dist, debug=True)
+    #
+    # # warp
+    # warp = warp_to_birdeye(calibrated_image, debug=True)
+    #
+    # print(image.shape)
+    # print(warp.shape)
+    #
+    # print("abc")
+    # # pdb.set_trace()
+    # # undistort(image, mtx, dist, debug=True)
 
-    # calibrate camera
+    image = mpimg.imread("images/calibration1.jpg")
     ret, mtx, dist, rvecs, tvecs = calibrate_camera()
+    calibrated_image = undistort(image, mtx, dist, debug=False)
+    mpimg.imsave(f"images/calibration1_calibrated.jpg", calibrated_image)
 
-    calibrated_image = undistort(image, mtx, dist, debug=True)
 
-    # warp
-    warp = warp_to_birdeye(calibrated_image, debug=True)
-
-    print(image.shape)
-    print(warp.shape)
-
-    print("abc")
-    # pdb.set_trace()
-    # undistort(image, mtx, dist, debug=True)
 

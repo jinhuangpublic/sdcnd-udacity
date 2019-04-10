@@ -92,7 +92,7 @@ def add_info(image, image1, image2=None, image3=None, data={}):
                     fontScale=1,
                     color=(255, 255, 255),
                     thickness=1,
-                    lineType=cv2.LINE_8)
+                    lineType=cv2.LINE_AA)
 
     return frame
 
