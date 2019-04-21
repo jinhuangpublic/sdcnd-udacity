@@ -14,3 +14,8 @@ imageio
 imageio-ffmpeg
 moviepy
 PyQt5
+tensorflow
+keras
+seaborn
+sklearn
+
