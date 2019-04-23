@@ -10,3 +10,4 @@ conf_credentialed/
 credentialed_conf/
 
 logs/
+data/
