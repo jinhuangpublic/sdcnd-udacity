@@ -11,3 +11,4 @@ credentialed_conf/
 
 logs/
 data/
+model.h5

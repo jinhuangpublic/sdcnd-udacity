@@ -1,0 +1,13 @@
+.DS_Store
+.idea
+*.pyc
+*.iml
+.coverage
+*.retry
+.terraform
+
+conf_credentialed/
+credentialed_conf/
+
+logs/
+data/

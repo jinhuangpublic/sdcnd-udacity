@@ -18,4 +18,6 @@ tensorflow
 keras
 seaborn
 sklearn
-
+#socketio
+#eventlet
+#flask
