@@ -1,5 +1,4 @@
 import tensorflow as tf
-# from keras import Sequential
 from tensorflow.contrib.layers import flatten
 from keras.preprocessing.image import ImageDataGenerator
 
@@ -21,16 +20,20 @@ import os
 import platform
 import time
 
+
 EPOCHS = 29 # 29
 STEPS_PER_EPOCH = 2000  # epoch samples: STEPS_PER_EPOCH * BATCHSIZE
 VALIDATION_STEPS = 100  # samples = VALIDATION_STEPS * BATCHSIZE
 BATCHSIZE = 500
 
-# Testing Now
-EPOCHS = 3 # 29
-STEPS_PER_EPOCH = 20  # epoch samples: STEPS_PER_EPOCH * BATCHSIZE
-VALIDATION_STEPS = 1  # samples = VALIDATION_STEPS * BATCHSIZE
-BATCHSIZE = 500
+
+DATA_DIR = './data'
+TRAIN_VAL_SPLIT = 0.2
+INPUT_CHANNELS = 3
+STEERING_CORRECTION = 0.3
+WIDTH = 320
+HEIGHT = 160
+
 
 DEBUG = False
 if (platform.system()== 'Darwin'):
@@ -43,27 +46,11 @@ if DEBUG:
     BATCHSIZE = 500
 
 
-# print("\n--------------------------------")
-# print(f"Epochs: {EPOCHS}")
-# print(f"Samples per epoch: {STEPS_PER_EPOCH * BATCHSIZE}")
-# print("--------------------------------\n")
-
-
-DATA_DIR = './data'
-TRAIN_VAL_SPLIT = 0.2
-
-
-INPUT_CHANNELS = 3
-
-CROP_HEIGHT = range(20, 140)
-
-STEERING_CORRECTION = 0.3
-
-NVIDIA_WIDTH = 66
-NVIDIA_HEIGHT = 200
-
-WIDTH = 320
-HEIGHT = 160
+print("\n--------------------------------")
+print(EPOCHS)
+print(STEPS_PER_EPOCH)
+print(BATCHSIZE)
+print("--------------------------------\n")
 
 
 def split_data():
@@ -92,16 +79,14 @@ def load_batch(data, augment):
         ct_path, lt_path, rt_path, steer, throttle, brake, speed = shuffled_data.pop()
         steer = np.float32(steer)
 
-        # Randomly a camera angle
+        # Randomly choose one of the three camera angles
         camera = random.choice(['frontal', 'left', 'right'])
         frame = cv2.imread(join(DATA_DIR, ct_path.strip()))
         if camera == 'frontal':
             steer = steer
         elif camera == 'left':
-            # frame = preprocess(cv2.imread(join(DATA_DIR, lt_path.strip())))
             steer = steer + STEERING_CORRECTION
         elif camera == 'right':
-            # frame = preprocess(cv2.imread(join(DATA_DIR, rt_path.strip())))
             steer = steer - STEERING_CORRECTION
 
         # Data Augmentation
@@ -195,5 +180,3 @@ if __name__ == '__main__':
 
     if not DEBUG:
         model.save('model.h5')
-
-
