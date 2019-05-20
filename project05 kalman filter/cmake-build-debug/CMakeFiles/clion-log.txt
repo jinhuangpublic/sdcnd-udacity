@@ -1,0 +1,4 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/jin/code/sdcnd-udacity/project05 kalman filter"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/jin/code/sdcnd-udacity/project05 kalman filter/cmake-build-debug
